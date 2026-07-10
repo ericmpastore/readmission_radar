@@ -42,13 +42,14 @@ def main():
     # Day 30 is included in the readmission window.
     # Assume that all records in the dataset have had a full 30-day follow-up window.
 
-    # print(
-    #     con.sql(
-    #         f"""
-           
-    #         """
-    #     )
-    # )
+    print(
+        con.sql(
+            f"""
+            SELECT FLOOR(COUNT(admission_date) / COUNT(discharge_date))
+            FROM {TABLE_NAME};
+            """
+        )
+    )
 
 if __name__ == '__main__':
     main()
