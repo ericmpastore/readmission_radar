@@ -45,7 +45,7 @@ def main():
     print(
         con.sql(
             f"""
-            SELECT FLOOR(COUNT(admission_date) / COUNT(discharge_date))
+            SELECT FLOOR(COUNT(admission_date) / COUNT(discharge_date)) AS readmission_rate
             FROM {TABLE_NAME};
             """
         )
