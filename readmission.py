@@ -42,14 +42,21 @@ def main():
     # Day 30 is included in the readmission window.
     # Assume that all records in the dataset have had a full 30-day follow-up window.
 
+    # Algorithm, EPastore 07/12/2026
+    # Calculate readmission rate as readmission_rate / admission_count
+    # admission_count is simply a COUNT of all rows
+    # readmission_rate is a COUNT of rows where other rows have the same name but a date less than the discharge date plus 30 days 
+    # LEAD(admission_date) OVER (PARTITION BY patient_id ORDER BY admission_date) 
+
     print(
         con.sql(
             f"""
-            SELECT FLOOR(COUNT(admission_date) / COUNT(discharge_date)) AS readmission_rate
+            SELECT FLOOR(COUNT(admission_date) / COUNT(*)) AS readmission_rate
             FROM {TABLE_NAME};
             """
         )
     )
+
 
 if __name__ == '__main__':
     main()
