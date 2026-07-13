@@ -51,6 +51,10 @@ def main():
     print(
         con.sql(
             f"""
+            WITH dates(admission_date,patient_id,discharge_date) AS (
+                SELECT patient_id, discharge_date, LEAD(admission_date) OVER (PARTITION BY patient_id ORDER BY admission_date)
+                FROM {TABLE_NAME}
+            )
             SELECT FLOOR(COUNT(admission_date) / COUNT(*)) AS readmission_rate
             FROM {TABLE_NAME};
             """
