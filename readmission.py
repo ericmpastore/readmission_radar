@@ -31,23 +31,28 @@ def main():
 
     # Test connection, EPastore 05/17/2026
     print(
-    con.sql(
-        f"""
-            SELECT * FROM {TABLE_NAME} LIMIT 10;
-        """))
+        con.sql(
+            f"""
+                SELECT * FROM {TABLE_NAME} LIMIT 10;
+            """))
     
-    # Business Question
+    # View output of CTE logic outside of CTE, EPastore 07/15/2026
+    print(
+        con.sql(
+            f"""
+                SELECT patient_id, discharge_date, LEAD(admission_date) OVER (PARTITION BY patient_id ORDER BY admission_date) AS next_admission_date 
+                FROM {TABLE_NAME};
+            """))
+    
+    # Business Question, EPastore 07/15/2026
     # The analytic task is to calculate the hospital's 30 day readmission rate. 
     # A discharge counts as a 30-day readmission when the same patient is admitted again within 30 days of their discharge date.
     # Day 30 is included in the readmission window.
     # Assume that all records in the dataset have had a full 30-day follow-up window.
 
-    # Algorithm, EPastore 07/12/2026
-    # Calculate readmission rate as readmission_rate / admission_count
-    # admission_count is simply a COUNT of all rows
-    # readmission_rate is a COUNT of rows where other rows have the same name but a date less than the discharge date plus 30 days 
-    # LEAD(admission_date) OVER (PARTITION BY patient_id ORDER BY admission_date) 
-
+    # Process, EPastore 07/15/2026
+    # Use CTE to generate table with next admission date if present, otherwise NULL
+    # Use main query to generate 1 or 0 value if date in 30 days, then sum and divde by total count
     print(
         con.sql(
             f"""
